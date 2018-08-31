@@ -33,7 +33,6 @@
         let d=res.data
         if(d.errno===ERR_OK){
           this.seller=d.data;
-          console.log(this.seller)
         }
       })
     },

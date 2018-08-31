@@ -35,8 +35,7 @@
           <div class="detail-main">
             <h1 class="name">{{seller.name}}</h1>
             <div class="star-wrapper">
-              123
-              <!--<star :size="48" :score="seller.score"></star>-->
+              <star :size="48" :score="seller.score"></star>
             </div>
             <div class="title">
               <div class="line"></div>
@@ -68,7 +67,10 @@
 </template>
 
 <script>
+  import Star from '../star/star.vue';
+
   export default {
+    components:{Star},
     props: {
       seller: {
         type: Object
