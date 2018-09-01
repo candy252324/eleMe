@@ -39,7 +39,7 @@
                   <span>￥{{food.price*food.count}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <!--<cartcontrol :food="food"></cartcontrol>-->
                 </div>
               </li>
             </ul>
@@ -63,7 +63,7 @@
       selectFoods: {
         type: Array,
         default() {
-          return [{price:10,count:2}];
+          return [];
         }
       },
       deliveryPrice: {

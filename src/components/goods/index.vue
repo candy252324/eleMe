@@ -26,12 +26,11 @@
                   <span class="count">月售{{food.sellCount}}</span><span class="count">好评{{food.rating}}</span>
                 </div>
                 <div class="price">
-                  <span class="now">￥{{food.price}}</span><span class="old"
-                                                                v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                  <span class="now">￥{{food.price}}</span>
+                  <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartControl-wrapper">
-                  111111
-                  <!--<cartControl :food="food" @increment="incrementTotal"></cartControl>-->
+                  <cart-control :food="food"></cart-control>
                 </div>
               </div>
             </li>
@@ -43,6 +42,7 @@
       class-="shop-cart"
       :delivery-price="seller.deliveryPrice"
       :min-price="seller.minPrice"
+      :selectFoods="selectFoods"
     ></shop-cart>
   </div>
 </template>
@@ -50,11 +50,12 @@
 <script>
   import BScroll from 'better-scroll'
   import ShopCart from '@/components/shopCart'
+  import cartControl from '@/components/cartControl'
   const ERR_OK=0;
 
   export default {
     name:"goods",
-    components:{ ShopCart },
+    components:{ ShopCart, cartControl },
     data() {
       return {
         goods:[],
@@ -82,6 +83,7 @@
         let foods = [];
         this.goods.forEach((good) => {
           good.foods.forEach((food) => {
+            // cartControl组件中通过$set 给food邦定了count观测属性，所以，只要存在count属性，则说明被加入了购物车
             if (food.count) {
               foods.push(food);
             }
