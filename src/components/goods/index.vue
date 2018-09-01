@@ -39,20 +39,32 @@
         </li>
       </ul>
     </div>
+    <shop-cart
+      class-="shop-cart"
+      :delivery-price="seller.deliveryPrice"
+      :min-price="seller.minPrice"
+    ></shop-cart>
   </div>
 </template>
 
 <script>
   import BScroll from 'better-scroll'
+  import ShopCart from '@/components/shopCart'
   const ERR_OK=0;
 
   export default {
     name:"goods",
+    components:{ ShopCart },
     data() {
       return {
         goods:[],
         listHeight:[],  // 每个区间的高度
         scrollY: 0,  // 右侧区域滑动的高度
+      }
+    },
+    props: {
+      seller: {
+        type: Object
       }
     },
     computed: {
