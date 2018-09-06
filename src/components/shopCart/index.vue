@@ -17,13 +17,13 @@
         </div>
       </div>
       <div class="ball-container">
-        <!--<div v-for="ball in balls">-->
-          <!--<transition name="drop" v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:after-enter="afterEnter">-->
-            <!--<div class="ball" v-show="ball.show">-->
-              <!--<div class="inner inner-hook"></div>-->
-            <!--</div>-->
-          <!--</transition>-->
-        <!--</div>-->
+        <div v-for="ball in balls">
+          <transition name="drop" v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:after-enter="afterEnter">
+            <div class="ball" v-show="ball.show">
+              <div class="inner inner-hook"></div>
+            </div>
+          </transition>
+        </div>
       </div>
       <transition name="fold">
         <div class="shopcart-list" v-show="listShow">
@@ -55,7 +55,8 @@
     name: 'index',
     data(){
       return {
-
+        balls: [{show: false}, {show: false}, {show: false}, {show: false}, {show: false}],
+        dropBalls:[],  // 已经下落的小球
       }
     },
     props: {
@@ -126,6 +127,55 @@
       }
     },
     methods:{
+      // target 为小球的起始dom
+      drop(target){
+        for (let i = 0; i < this.balls.length; i++) {
+          let ball = this.balls[i];
+          if (!ball.show) {
+            ball.show = true;
+            ball.el = target;
+            this.dropBalls.push(ball);
+            break;
+          }
+        }
+      },
+      // el为当前执行transition动画的dom对象
+      // el 元素原本在购物车的位置，执行动画之前，先将el移动到点击加号按钮的位置：
+      // 即向右上方移动，x为正，y为负
+      beforeEnter(el) {
+        let count = this.balls.length;
+        while (count--) {
+          let ball = this.balls[count];
+          if (ball.show) {
+            let rect = ball.el.getBoundingClientRect();
+            let x = rect.left - 32;   // 购物车位置x-加号按钮位置x
+            let y = -(window.innerHeight - rect.top - 22);
+            el.style.display = '';
+            el.style.webkitTransform = `translate3d(0,${y}px,0)`;
+            el.style.transform = `translate3d(0,${y}px,0)`;
+            let inner = el.getElementsByClassName('inner-hook')[0];
+            inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
+            inner.style.transform = `translate3d(${x}px,0,0)`;
+          }
+        }
+      },
+      enter(el) {
+        let rf = el.offsetHeight; // 触发浏览器重绘
+        this.$nextTick(() => {
+          el.style.webkitTransform = 'translate3d(0,0,0)';  // 还原回到购物车的位置
+          el.style.transform = 'translate3d(0,0,0)';
+          let inner = el.getElementsByClassName('inner-hook')[0];
+          inner.style.webkitTransform = 'translate3d(0,0,0)';
+          inner.style.transform = 'translate3d(0,0,0)';
+        });
+      },
+      afterEnter(el) {
+        let ball = this.dropBalls.shift();
+        if (ball) {
+          ball.show = false;
+          el.style.display = 'none';
+        }
+      },
       toggleList(){},
       pay(){},
       emptyCart(){},
@@ -229,7 +279,7 @@
         bottom: 22px
         left: 32px
         z-index: 150
-        transition: all 0.4s cubic-bezier(.34,-0.56,.73,.62)
+        transition: all 0.4s cubic-bezier(.34,-0.56,.73,.62)  // 二次贝塞尔曲线
         .inner
           width: 16px
           height: 16px

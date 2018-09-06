@@ -30,7 +30,7 @@
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartControl-wrapper">
-                  <cart-control :food="food"></cart-control>
+                  <cart-control :food="food" @addCart="addCart"></cart-control>
                 </div>
               </div>
             </li>
@@ -39,6 +39,7 @@
       </ul>
     </div>
     <shop-cart
+      ref="ShopCart"
       class-="shop-cart"
       :delivery-price="seller.deliveryPrice"
       :min-price="seller.minPrice"
@@ -128,6 +129,13 @@
           this.listHeight.push(height);
         }
       },
+      // 小球动画实现
+      _drop(target){
+        //$nextTick,体验优化，异步执行下落动画
+        this.$nextTick(()=>{
+          this.$refs.ShopCart.drop(target)
+        })
+      },
       selectMenu(index,event){
         // betterScroll派发的click事件,event有_constructed属性，而浏览器原生的click事件没有该属性
         // 从而规避了pc端响应两次点击事件的问题(实际上似乎并不存在这个问题？？？)
@@ -139,6 +147,9 @@
         this.foodsScroll.scrollToElement(el, 300);
       },
       selectFood(){},
+      addCart(target){
+        this._drop(target)
+      },
     }
   }
 </script>

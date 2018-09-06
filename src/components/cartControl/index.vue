@@ -31,6 +31,7 @@ export default {
       } else {
         this.food.count++;
       }
+      this.$emit("addCart",event.target)
       // this.$store.commit({
       //   type: 'initBallEle',
       //   el: event.target
